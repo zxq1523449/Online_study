@@ -322,12 +322,17 @@ class MyMessageView(LoginRequiredMixin, View):
         })
 
 
+# class LogoutView(View):
+#     '''用户登出'''
+#     def get(self,request):
+#         logout(request)
+#         return HttpResponse(reverse("index"))
+
+
 class LogoutView(View):
     def get(self,request):
         logout(request)
         return redirect(reverse("index"))
-
-
 class IndexView(View):
     '''首页'''
     def get(self,request):
@@ -347,4 +352,34 @@ class IndexView(View):
         })
 
 
+from django.shortcuts import render_to_response
+def pag_not_found(request):
+    # 全局404处理函数
+    response = render_to_response('errors/404.html', {})
+    response.status_code = 404
+    return response
 
+def page_error(request):
+    # 全局500处理函数
+    from django.shortcuts import render_to_response
+    response = render_to_response('errors/500.html', {})
+    response.status_code = 500
+    return response
+
+class LoginUnsafeView(View):
+    def get(self, request):
+        return render(request, "login.html", {})
+    def post(self, request):
+        user_name = request.POST.get("username", "")
+        pass_word = request.POST.get("password", "")
+
+        import MySQLdb
+        conn = MySQLdb.connect(host='127.0.0.1', user='root', passwd='root', db='mxonline', charset='utf8')
+        cursor = conn.cursor()
+        sql_select = "select * from users_userprofile where email='{0}' and password='{1}'".format(user_name, pass_word)
+
+        result = cursor.execute(sql_select)
+        for row in cursor.fetchall():
+            # 查询到用户
+            pass
+        print ('test')

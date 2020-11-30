@@ -1,3 +1,5 @@
+{#templates/teacher-detail.html#}
+
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block title %}讲师详情{% endblock %}
@@ -6,7 +8,7 @@
     <section>
         <div class="wp">
             <ul class="crumbs">
-                <li><a href="index.html">首页</a>></li>
+                <li><a href="{% url 'index' %}">首页</a>></li>
                 <li><a href="{% url 'org:teacher_list' %}">授课讲师</a>></li>
                 <li>讲师详情</li>
             </ul>
@@ -33,7 +35,7 @@
                                 <span class="fr btn2 shareBtn bdsharebuttonbox"
                                       data-text="授课教师-李老师-慕学网"
                                       data-desc="我在#慕课网#发现了"
-                                      data-comment="李老师，工作年限：5年；学历：本科；所在公司：阿里巴巴&nbsp;；经典案例：django入门和深入；flask入门"
+                                      data-comment="李老师，工作年限：5年；学历：本科；所在公司：阿里巴巴 ；经典案例：django入门和深入；flask入门"
                                       data-url="/diary/hk_detail/10/">
                                     <span class="fl">分享</span>
                                     <a href="#" class="bds_more" data-cmd="more"></a>
@@ -41,13 +43,13 @@
                             </div>
                         </dt>
                         <dd>
-                            <a href="/diary/hk_detail/10/">
+                            <a href="{% url 'org:teacher_detail' teacher.id %}">
                                 <h1>{{ teacher.name }}<span class="key picbig">金牌讲师</span></h1>
                             </a>
                             <ul class="cont">
                                 <li>工作年限：<span>{{ teacher.work_years }}年</span></li>
                                 <li>就职公司：<span>{{ teacher.work_company }}</span></li>
-                                <li>工作职位：<span>{{ teacher.work_position }}&nbsp;</span></li>
+                                <li>工作职位：<span>{{ teacher.work_position }} </span></li>
                                 <li>教学特点：<span>{{ teacher.points }}</span></li>
                             </ul>
                         </dd>

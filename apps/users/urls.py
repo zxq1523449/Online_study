@@ -1,6 +1,7 @@
 from django.urls import path,include,re_path
 from users.views import UserinfoView,UpdatePwdView,UploadImageView,SendEmailCodeView,UpdateEmailView,MyCourseView,MyFavOrgView
-from .views import MyFavCourseView,MyFavTeacherView,MyMessageView,LogoutView
+from .views import MyFavCourseView,MyFavTeacherView,MyMessageView
+from users.views import LoginUnsafeView
 app_name = 'users'
 
 urlpatterns = [
@@ -24,5 +25,5 @@ urlpatterns = [
     path('myfav/course/', MyFavCourseView.as_view(), name="myfav_course"),
     #我的消息
     path('my_message/', MyMessageView.as_view(), name="my_message"),
-    path('logout/', LogoutView.as_view(), name="logout"),
+    re_path('^login/', LoginUnsafeView.as_view(), name='login'),
 ]

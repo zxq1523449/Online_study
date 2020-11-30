@@ -72,12 +72,14 @@ class CourseDetailView(View):
             "has_fav_org": has_fav_org,
         })
 
+
 # view中把当前课程的课程资源传到前端
 class CourseInfoView(LoginRequiredMixin,View):
     '''课程章节信息'''
     def get(self,request,course_id):
         course = Course.objects.get(id=int(course_id))
-
+        course.students += 1
+        course.save()
         # 查询用户是否已经学习了该课程
         user_courses = UserCourse.objects.filter(user=request.user,course=course)
         if not user_courses:
@@ -97,8 +99,6 @@ class CourseInfoView(LoginRequiredMixin,View):
         # 通过所有课程的id,找到所有的课程，按点击量去五个
         relate_courses = Course.objects.filter(id__in=course_ids).order_by("-click_nums")[:5]
 
-        course.students += 1
-        course.save()
         # 资源
         all_resources = CourseResource.objects.filter(course=course)
         return render(request,'course/course-video.html',{
@@ -106,6 +106,7 @@ class CourseInfoView(LoginRequiredMixin,View):
             'all_resources':all_resources,
             'relate_courses':relate_courses,
         })
+
 class CommentsView(View):
     '''课程评论'''
     def get(self, request, course_id):
@@ -117,6 +118,7 @@ class CommentsView(View):
             "all_resources": all_resources,
             'all_comments':all_comments,
         })
+
 
 
 
@@ -142,7 +144,6 @@ class AddCommentsView(View):
             return HttpResponse('{"status":"success", "msg":"评论成功"}', content_type='application/json')
         else:
             return HttpResponse('{"status":"fail", "msg":"评论失败"}', content_type='application/json')
-
 
 class VideoPlayView(LoginRequiredMixin, View):
     '''课程章节视频播放页面'''

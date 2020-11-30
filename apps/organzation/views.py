@@ -6,8 +6,8 @@ from django.db.models import Q
 from organzation.models import CourseOrg,CityDict,Teacher
 from operation.models import UserFavorite
 from course.models import Course
-from django.core.paginator import PageNotAnInteger
-from pure_pagination import Paginator
+from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+# from pure_pagination import Paginator
 from .forms import UserAskForm
 
 class OrgView(View):
@@ -218,7 +218,6 @@ class AddFavView(View):
 
 # 讲师列表
 class TeacherListView(View):
-
     def get(self, request):
         all_teachers = Teacher.objects.all()
         # 总共有多少老师使用count进行统计
@@ -231,11 +230,12 @@ class TeacherListView(View):
             # or操作使用Q
             all_teachers = all_teachers.filter(name__icontains=search_keywords)
         # 人气排序
-        sort = request.GET.get('sort', '')
+        sort = request.GET.get('sort','')
         if sort:
             if sort == 'hot':
                 all_teachers = all_teachers.order_by('-click_nums')
-        # 讲师排行榜
+
+        #讲师排行榜
         sorted_teacher = Teacher.objects.all().order_by('-click_nums')[:3]
         # 进行分页
         try:
@@ -244,13 +244,13 @@ class TeacherListView(View):
             page = 1
         p = Paginator(all_teachers, 1, request=request)
         teachers = p.page(page)
-        context = {
-            'all_teachers':all_teachers,
-            'teacher_nums':teacher_nums,
+        return render(request, "teacher/teachers-list.html", {
+            "all_teachers": teachers,
+            "teacher_nums": teacher_nums,
             'sorted_teacher':sorted_teacher,
             'sort':sort,
-        }
-        return render(request,'teacher/teachers-list.html',context)
+        })
+
 
 class TeacherDetailView(View):
     '''讲师详情'''
